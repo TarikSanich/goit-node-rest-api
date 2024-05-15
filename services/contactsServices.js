@@ -1,98 +1,82 @@
 import * as fs from "node:fs/promises";
 import path from "node:path";
+// вбудована в express бібла для створення ID, виклик: crypto.randomUUID()
 import crypto from "node:crypto";
 
 const contactsPath = path.resolve("db", "contacts.json");
 
+// ------------------ Private for---------------------------------//
+
+// readContacts
+async function readContacts() {
+  const data = await fs.readFile(contactsPath, { encoding: "utf-8" });
+  return JSON.parse(data);
+}
+
+// writeContacts
 function writeContacts(contacts) {
-  return fs.writeFile(contactsPath, JSON.stringify(contacts, undefined, 2));
+  return fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
 }
 
+// ------------------ Export for--------------------------------- //
+
+// listContacts
 async function listContacts() {
-  try {
-    const data = await fs.readFile(contactsPath, "utf-8");
-    return JSON.parse(data);
-  } catch (e) {
-    console.error(e.message);
-    return [];
-  }
+  return await readContacts();
 }
 
+// getContactById
 async function getContactById(contactId) {
-  try {
-    const contacts = await listContacts();
-    const contact = contacts.find((cont) => cont.id === contactId);
-
-    if (typeof contact === "undefined") {
-      return null;
-    }
-    return contact;
-  } catch (e) {
-    console.error(e.message);
-    return null;
-  }
+  const contacts = await readContacts();
+  return contacts.find((contact) => contact.id === contactId) || null;
 }
 
+// removeContact
 async function removeContact(contactId) {
-  try {
-    const contacts = await listContacts();
-    const index = contacts.findIndex((contact) => contact.id === contactId);
-
-    if (index === -1) {
-      return null;
-    }
-
-    const removedContact = contacts[index];
-
-    const newContacts = [
-      ...contacts.slice(0, index),
-      ...contacts.slice(index + 1),
-    ];
-
-    await writeContacts(newContacts);
-
+  let contacts = await readContacts();
+  const removedContactIndex = contacts.findIndex(
+    (contact) => contact.id === contactId
+  );
+  if (removedContactIndex !== -1) {
+    const removedContact = contacts.splice(removedContactIndex, 1)[0];
+    await writeContacts(contacts);
     return removedContact;
-  } catch (e) {
-    console.error(e);
   }
+  return null;
 }
 
-async function addContact({ name, email, phone }) {
-  try {
-    const contacts = await listContacts();
-    const newContact = { id: crypto.randomUUID(), name, email, phone };
-    const updatedContacts = [...contacts, newContact];
-
-    await writeContacts(updatedContacts);
-    return newContact;
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
+// addContact
+async function addContact(name, email, phone) {
+  const contacts = await readContacts();
+  const newContact = { name, email, phone, id: crypto.randomUUID() };
+  contacts.push(newContact);
+  await writeContacts(contacts);
+  return newContact;
 }
 
-async function updateContact(contactId, data) {
-  try {
-    const contacts = await listContacts();
-    const index = contacts.findIndex((contact) => contact.id === contactId);
-
-    if (index === -1) {
-      return null;
-    }
-
-    const updatedContact = { ...contacts[index], ...data };
+// updateContact
+async function updateContact(id, { name, email, phone }) {
+  const contacts = await readContacts();
+  const index = contacts.findIndex((contact) => contact.id === id);
+  if (index !== -1) {
+    const updatedContact = {
+      ...contacts[index],
+      ...(name && { name }),
+      ...(email && { email }),
+      ...(phone && { phone }),
+      id,
+    };
     contacts[index] = updatedContact;
-    writeContacts(contacts);
-    return updatedContact;
-  } catch (e) {
-    console.error(e);
+    await writeContacts(contacts);
+    return contacts[index];
   }
+  return null;
 }
 
 export default {
+  listContacts,
   getContactById,
   removeContact,
   addContact,
-  listContacts,
   updateContact,
 };
