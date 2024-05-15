@@ -73,11 +73,10 @@ export const createContact = async (req, res, next) => {
   }
 };
 
-// PUT /api/contacts/:id
+
 export const updateContact = async (req, res, next) => {
   const { id } = req.params;
   try {
-    //перевірка id на належність до ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw HttpError(400, "Invalid ObjectId format");
     }
@@ -94,8 +93,7 @@ export const updateContact = async (req, res, next) => {
         phone,
       },
 
-      // За замовчуванням { new: false }, оновлення документу у MongoDB методом findByIdAndUpdate, повертає оригінал документа (до оновлення) якщо передати третім аргументом об'єкт { new: true }, метод поверне одразу оновленну версію документа.
-      { new: true }
+     { new: true }
     );
     if (!updatedContact) {
       throw HttpError(404);
@@ -106,42 +104,42 @@ export const updateContact = async (req, res, next) => {
   }
 };
 
-// ф-ція updateStatusContact
+
 async function updateStatusContact(contactId, favorite) {
   try {
-    // Оновлюємо поле favorite контакту за його ідентифікатором
+
     const updatedContact = await Contact.findByIdAndUpdate(
       contactId,
       { favorite },
       { new: true }
     );
-    // Перевіряємо, чи знайдено контакт за вказаним ID
+
     if (!updatedContact) {
       return null;
     }
-    // Повертаємо оновлений контакт
+
     return updatedContact;
   } catch (error) {
     throw error;
   }
 }
 
-// PATCH /api/contacts/:contactId/favorite
+
 export const updateContactFavoriteStatus = async (req, res, next) => {
   const { contactId } = req.params;
   const { favorite } = req.body;
 
-  // Перевірка body запиту
+
   const { error } = validateFavoriteBody.validate(req.body);
 
-  // Якщо тіло запиту не відповідає схемі, повертаємо помилку 400 (Bad Request)
+
   if (error) {
-    // details[0].message - перша помилка при перевірці тіла запиту
+
     return res.status(400).json({ message: error.details[0].message });
   }
-  // Якщо з body все добре, виклик ф-ції updateStatusContact (contactId, body)
+
   try {
-    //перевірка contactId на належність до ObjectId
+
     if (!mongoose.Types.ObjectId.isValid(contactId)) {
       throw HttpError(400, "Invalid ObjectId format");
     }
@@ -154,4 +152,3 @@ export const updateContactFavoriteStatus = async (req, res, next) => {
     next(error);
   }
 };
-

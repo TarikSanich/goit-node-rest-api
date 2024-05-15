@@ -1,37 +1,29 @@
 import * as fs from "node:fs/promises";
 import path from "node:path";
-// вбудована в express бібла для створення ID, виклик: crypto.randomUUID()
 import crypto from "node:crypto";
 
 const contactsPath = path.resolve("db", "contacts.json");
 
-// ------------------ Private for---------------------------------//
 
-// readContacts
 async function readContacts() {
   const data = await fs.readFile(contactsPath, { encoding: "utf-8" });
   return JSON.parse(data);
 }
 
-// writeContacts
 function writeContacts(contacts) {
   return fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
 }
 
-// ------------------ Export for--------------------------------- //
 
-// listContacts
 async function listContacts() {
   return await readContacts();
 }
 
-// getContactById
 async function getContactById(contactId) {
   const contacts = await readContacts();
   return contacts.find((contact) => contact.id === contactId) || null;
 }
 
-// removeContact
 async function removeContact(contactId) {
   let contacts = await readContacts();
   const removedContactIndex = contacts.findIndex(
@@ -45,7 +37,6 @@ async function removeContact(contactId) {
   return null;
 }
 
-// addContact
 async function addContact(name, email, phone) {
   const contacts = await readContacts();
   const newContact = { name, email, phone, id: crypto.randomUUID() };
@@ -54,7 +45,6 @@ async function addContact(name, email, phone) {
   return newContact;
 }
 
-// updateContact
 async function updateContact(id, { name, email, phone }) {
   const contacts = await readContacts();
   const index = contacts.findIndex((contact) => contact.id === id);

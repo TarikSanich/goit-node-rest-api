@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// схема для збереження моделі колекції contacts у MongoDB
 const contactSchema = new mongoose.Schema(
   {
     name: {
@@ -21,5 +20,6 @@ const contactSchema = new mongoose.Schema(
   { versionKey: false } 
 );
 
+const Contact = mongoose.model("Contact", contactSchema);
 
-export default mongoose.model("Contact", contactSchema);
+export default Contact;

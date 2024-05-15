@@ -3,11 +3,20 @@ import morgan from "morgan";
 import cors from "cors";
 import contactsRouter from "./routes/contactsRouter.js";
 import mongoose from "mongoose";
+// завантаження .env file into process.env
+// зробити npm i dotenv
+// створити file   .env
+// імпортувати модуль
 import "dotenv/config";
 
 const app = express();
 app.use(morgan("tiny"));
 app.use(cors());
+
+// використання  middleware для парсингу JSON
+// вар.1,  app.use(express.json()); midleware express для репарсеру req.body, оголоcити глобально, що буде спрацьовувати на кожний http запит, за потреб лише для POST, PUT, PATCH
+
+// вар.2, bestpractic - const jsonParser = express.json();  оголошувати як локальну midleware в роутах, передаючи в параметри змінну jsonParser перед (req, res) або перед викликом функції з (req, res) у contactsRouter.js
 
 app.use("/api/contacts", contactsRouter);
 
