@@ -8,7 +8,7 @@ import Contact from "../models/Contact.js";
 
 import mongoose from "mongoose";
 
-// GET /api/contacts
+
 export const getAllContacts = async (req, res, next) => {
   try {
     const contacts = await Contact.find();
@@ -19,12 +19,10 @@ export const getAllContacts = async (req, res, next) => {
   }
 };
 
-// GET /api/contacts/:id
 export const getOneContact = async (req, res, next) => {
-  const { id } = req.params; // Отримуємо id з URL;
+  const { id } = req.params; 
 
   try {
-    //перевірка id на належність до ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw HttpError(400, "Invalid ObjectId format");
     }
@@ -34,16 +32,14 @@ export const getOneContact = async (req, res, next) => {
     }
     res.status(200).json(contact);
   } catch (error) {
-    const status = error.status || 500; // обробка error як що статус відсутний
+    const status = error.status || 500;
     res.status(status).json({ message: error.message });
   }
 };
 
-// DELETE /api/contacts/:id
 export const deleteContact = async (req, res, next) => {
   const { id } = req.params;
   try {
-    //перевірка id на належність до ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw HttpError(400, "Invalid ObjectId format");
     }
@@ -57,7 +53,6 @@ export const deleteContact = async (req, res, next) => {
   }
 };
 
-// POST /api/contacts
 export const createContact = async (req, res, next) => {
   try {
     const { name, email, phone } = req.body;
