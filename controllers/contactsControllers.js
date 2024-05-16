@@ -69,6 +69,7 @@ export const createContact = async (req, res, next) => {
 };
 
 
+// Оновлення контакту за ідентифікатором
 export const updateContact = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -80,15 +81,11 @@ export const updateContact = async (req, res, next) => {
     if (error) {
       throw HttpError(400, "Body must have at least one field");
     }
+    // Оновлення контакту з опцією { new: true } для повернення оновленого документа
     const updatedContact = await Contact.findByIdAndUpdate(
       id,
-      {
-        name,
-        email,
-        phone,
-      },
-
-     { new: true }
+      { name, email, phone },
+      { new: true } // Повертає оновлений документ
     );
     if (!updatedContact) {
       throw HttpError(404);
@@ -100,50 +97,32 @@ export const updateContact = async (req, res, next) => {
 };
 
 
-async function updateStatusContact(contactId, favorite) {
-  try {
 
+export const updateContactFavoriteStatus = async (req, res, next) => {
+  const { id } = req.params;
+  const { favorite } = req.body;
+
+  try {
+    if (favorite === undefined || typeof favorite !== 'boolean') {
+      return res.status(400).json({ message: "Body must contain 'favorite' field with a boolean value" });
+    }
+    
+
+   
     const updatedContact = await Contact.findByIdAndUpdate(
-      contactId,
+      id,
       { favorite },
       { new: true }
     );
+    
 
     if (!updatedContact) {
-      return null;
+      return res.status(404).json({ message: "Contact not found" });
     }
 
-    return updatedContact;
-  } catch (error) {
-    throw error;
-  }
-}
-
-
-export const updateContactFavoriteStatus = async (req, res, next) => {
-  const { contactId } = req.params;
-  const { favorite } = req.body;
-
-
-  const { error } = validateFavoriteBody.validate(req.body);
-
-
-  if (error) {
-
-    return res.status(400).json({ message: error.details[0].message });
-  }
-
-  try {
-
-    if (!mongoose.Types.ObjectId.isValid(contactId)) {
-      throw HttpError(400, "Invalid ObjectId format");
-    }
-    const updatedContact = await updateStatusContact(contactId, favorite);
-    if (!updatedContact) {
-      throw HttpError(404, "Not found");
-    }
     res.status(200).json(updatedContact);
   } catch (error) {
     next(error);
   }
 };
+
