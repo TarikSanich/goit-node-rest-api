@@ -13,6 +13,7 @@ app.use(cors());
 
 
 app.use("/api/contacts", contactsRouter);
+app.use("/users", userRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });

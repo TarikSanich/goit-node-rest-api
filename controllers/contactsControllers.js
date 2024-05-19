@@ -69,7 +69,6 @@ export const createContact = async (req, res, next) => {
 };
 
 
-// Оновлення контакту за ідентифікатором
 export const updateContact = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -81,11 +80,10 @@ export const updateContact = async (req, res, next) => {
     if (error) {
       throw HttpError(400, "Body must have at least one field");
     }
-    // Оновлення контакту з опцією { new: true } для повернення оновленого документа
     const updatedContact = await Contact.findByIdAndUpdate(
       id,
       { name, email, phone },
-      { new: true } // Повертає оновлений документ
+      { new: true } 
     );
     if (!updatedContact) {
       throw HttpError(404);

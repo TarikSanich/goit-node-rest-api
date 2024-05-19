@@ -7,6 +7,7 @@ import {
   updateContact,
   updateContactFavoriteStatus,
 } from "../controllers/contactsControllers.js";
+import authMiddleware from "../middleware/auth.js";
 
 const jsonParser = express.json();
 
@@ -21,6 +22,8 @@ contactsRouter.delete("/:id", deleteContact);
 contactsRouter.post("/", jsonParser, createContact);
 
 contactsRouter.put("/:id", jsonParser, updateContact);
+
+contactsRouter.put("/:id", authMiddleware, updateContact);
 
 contactsRouter.patch("/:id/favorite", jsonParser, updateContactFavoriteStatus);
 
