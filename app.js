@@ -14,11 +14,7 @@ app.use(cors());
 // для глобального перетворення результатів обробки методу send(), що надсилає відповідь у вигляді тексту або HTML в об'єкт JSON
 app.use(express.json());
 
-// використання  middleware для парсингу JSON
-// вар.1,  app.use(express.json()); midleware express для репарсеру req.body, оголоcити глобально, що буде спрацьовувати на кожний http запит, за потреб лише для POST, PUT, PATCH
-// вар.2, bestpractic - const jsonParser = express.json();  оголошувати як локальну midleware в роутах, передаючи в параметри змінну jsonParser перед (req, res) або перед викликом функції з (req, res) у contactsRouter.js
 
-// підключення маршрутів - роутів
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", authRouter);
 

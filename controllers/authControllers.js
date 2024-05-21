@@ -59,7 +59,7 @@ export const loginUser = async (req, res, next) => {
       id: existUser.id,
     };
 
-    const secret = process.env.SECRET;
+    const secret = process.env.JWT_SECRET;
 
     const token = jwt.sign(payload, secret, { expiresIn: "23h" });
 
