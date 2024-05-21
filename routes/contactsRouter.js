@@ -2,14 +2,13 @@ import express from "express";
 import ContactsController from "../controllers/contactsControllers.js";
 import authTokenUsePassport from "../middleware/authTokenUsePassport.js";
 
-// локальний імопрт midleware express для репарсеру req.body
+
 const jsonParser = express.json();
 
-// створити екземпляр роутера
+
 const contactsRouter = express.Router();
 
-// додаємо мідлвари: jsonParser - в методи де є зчитування reg.body в запитах,
-// authTokenUsePassport - де потрібна авторізація
+
 contactsRouter.get(
   "/",
   authTokenUsePassport,

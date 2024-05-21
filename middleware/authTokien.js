@@ -14,8 +14,8 @@ export const authToken = (req, res, next) => {
       return res.status(401).send({ message: "Invalid token" });
     }
     req.user = {
-      id: decode.id, // або user._id
-      email: decode.email, // або user.email
+      id: decode.id, 
+      email: decode.email, 
     };
     next();
   });

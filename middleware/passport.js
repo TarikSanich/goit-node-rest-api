@@ -1,25 +1,24 @@
 import passport from "passport";
 import passportJWT from "passport-jwt";
-import User from "../models/User.js"; // Імпорт моделі
-import "dotenv/config"; // імпорт модулю dotenv
+import User from "../models/User.js";
+import "dotenv/config"; 
 
 
 
 
-const secret = process.env.JWT_SECRET; //import SECRET from .env
-const ExtractJWT = passportJWT.ExtractJwt; //import ExtractJWT from "passport-jwt"
-const Strategy = passportJWT.Strategy; //import Strategy from "passport-jwt"
+const secret = process.env.JWT_SECRET; 
+const ExtractJWT = passportJWT.ExtractJwt; 
+const Strategy = passportJWT.Strategy; 
 
 
 
-// Опції налаштування стратегії passport-jwt
 const options = {
   secretOrKey: secret,
-  // Витяг токену з заголовка Authorization
+ 
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
 };
 
-// JWT Strategy, дає читати JWT-токен із заголовка HTTP Authorization для кожного вхідного запиту
+
 passport.use(
   new Strategy(options, async (payload, done) => {
     try {
