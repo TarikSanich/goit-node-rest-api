@@ -1,5 +1,7 @@
-import mongoose from "mongoose";
+// 
 
+import mongoose from "mongoose";
+// схема для збереження моделі колекції users у MongoDB
 const userSchema = new mongoose.Schema(
   {
     password: {
@@ -20,17 +22,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
   },
-  { versionKey: false } 
-
+  { versionKey: false } // відключення додавання параметру __v (версіонування)
 );
-
-
-
+// Створення моделі на основі схеми
 const User = mongoose.model("User", userSchema);
 
 export default User;

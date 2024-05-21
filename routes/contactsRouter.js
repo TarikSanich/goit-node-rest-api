@@ -1,30 +1,52 @@
 import express from "express";
-import {
-  getAllContacts,
-  getOneContact,
-  deleteContact,
-  createContact,
-  updateContact,
-  updateContactFavoriteStatus,
-} from "../controllers/contactsControllers.js";
-import authMiddleware from "../middleware/auth.js";
+import ContactsController from "../controllers/contactsControllers.js";
+import authTokenUsePassport from "../middleware/authTokenUsePassport.js";
 
+// локальний імопрт midleware express для репарсеру req.body
 const jsonParser = express.json();
 
+// створити екземпляр роутера
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", getAllContacts);
+// додаємо мідлвари: jsonParser - в методи де є зчитування reg.body в запитах,
+// authTokenUsePassport - де потрібна авторізація
+contactsRouter.get(
+  "/",
+  authTokenUsePassport,
+  ContactsController.getAllContacts
+);
 
-contactsRouter.get("/:id", getOneContact);
+contactsRouter.get(
+  "/:id",
+  authTokenUsePassport,
+  ContactsController.getOneContact
+);
 
-contactsRouter.delete("/:id", deleteContact);
+contactsRouter.delete(
+  "/:id",
+  authTokenUsePassport,
+  ContactsController.deleteContact
+);
 
-contactsRouter.post("/", jsonParser, createContact);
+contactsRouter.post(
+  "/",
+  jsonParser,
+  authTokenUsePassport,
+  ContactsController.createContact
+);
 
-contactsRouter.put("/:id", jsonParser, updateContact);
+contactsRouter.put(
+  "/:id",
+  jsonParser,
+  authTokenUsePassport,
+  ContactsController.updateContact
+);
 
-contactsRouter.put("/:id", authMiddleware, updateContact);
-
-contactsRouter.patch("/:id/favorite", jsonParser, updateContactFavoriteStatus);
+contactsRouter.patch(
+  "/:contactId/favorite",
+  jsonParser,
+  authTokenUsePassport,
+  ContactsController.updateContactFavoriteStatus
+);
 
 export default contactsRouter;
