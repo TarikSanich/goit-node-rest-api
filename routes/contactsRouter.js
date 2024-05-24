@@ -1,27 +1,53 @@
 import express from "express";
-import {
-  getAllContacts,
-  getOneContact,
-  deleteContact,
-  createContact,
-  updateContact,
-  updateContactFavoriteStatus,
-} from "../controllers/contactsControllers.js";
+import ContactsController from "../controllers/contactsControllers.js";
+import authTokenUsePassport from "../middleware/authTokenUsePassport.js";
 
 const jsonParser = express.json();
-
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", getAllContacts);
+// Маршрут для отримання всіх контактів
+contactsRouter.get(
+  "/",
+  authTokenUsePassport,
+  ContactsController.getAllContacts
+);
 
-contactsRouter.get("/:id", getOneContact);
+// Маршрут для отримання одного контакту за id та owner
+contactsRouter.get(
+  "/:id",
+  authTokenUsePassport,
+  ContactsController.getOneContact
+);
 
-contactsRouter.delete("/:id", deleteContact);
+// Маршрут для видалення контакту за id та owner
+contactsRouter.delete(
+  "/:id",
+  authTokenUsePassport,
+  ContactsController.deleteContact
+);
 
-contactsRouter.post("/", jsonParser, createContact);
+// Маршрут для створення нового контакту
+contactsRouter.post(
+  "/",
+  jsonParser,
+  authTokenUsePassport,
+  ContactsController.createContact
+);
 
-contactsRouter.put("/:id", jsonParser, updateContact);
+// Маршрут для оновлення контакту за id та owner
+contactsRouter.put(
+  "/:id",
+  jsonParser,
+  authTokenUsePassport,
+  ContactsController.updateContact
+);
 
-contactsRouter.patch("/:id/favorite", jsonParser, updateContactFavoriteStatus);
+// Маршрут для оновлення статусу контакту (favorite) за id та owner
+contactsRouter.patch(
+  "/:id/favorite", // Зміна параметра маршруту на "/:id/favorite"
+  jsonParser,
+  authTokenUsePassport,
+  ContactsController.updateContactFavoriteStatus
+);
 
 export default contactsRouter;
