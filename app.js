@@ -4,6 +4,7 @@ import cors from "cors";
 import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
 import mongoose from "mongoose";
+import path from "path";
 import "dotenv/config";
 
 const app = express();
@@ -11,9 +12,12 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
-
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/avatars", express.static(path.resolve("public/avatars")));
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", authRouter);
+app.use("/users", authToken, usersRoutes);
 
 
 app.use((_, res) => {

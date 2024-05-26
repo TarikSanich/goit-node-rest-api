@@ -1,5 +1,6 @@
 import HttpError from "../helpers/HttpError.js";
 import { registerUserSchema } from "../schemas/usersSchemas.js";
+import gravatar from 'gravatar';
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -20,15 +21,20 @@ export const registerUser = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
+    const avatar = gravatar.url(email, { s: "250", d: "retro" }, true);
+
+
     await User.create({
       email: req.body.email,
       password: hashedPassword,
+      avatarURL: avatar,
     });
 
     res.status(201).send({
       user: {
         email: req.body.email,
         subscription: "starter",
+        avatarURL: avatarURL,
       },
     });
   } catch (error) {
