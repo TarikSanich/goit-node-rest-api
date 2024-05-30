@@ -8,4 +8,8 @@ const router = express.Router();
 
 router.patch("/avatars", uploadMiddleware.single("avatar"), UserController.updateAvatar);
 
+router.get("/verify/:verificationToken", UserController.verify);
+
+router.post("/verify", UserController.resendVerificationEmail);
+
 export default router;
